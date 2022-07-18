@@ -1,0 +1,8 @@
+- name: Generate nginx config
+  ansible.builtin.template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/sites-enabled/discourse
+    backup: no
+  notify: restart nginx
+  tags:
+    - nginx

@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  tooling:
+    build:
+      context: .
+      args:
+        TERRAFORM_VER: 1.2.5  # https://www.terraform.io/downloads
+        PACKER_VER: 1.8.2     # https://www.packer.io/downloads
+        DOCTL_VER: 1.78.0     # https://github.com/digitalocean/doctl/releases/
+    env_file: .env
+    volumes:
+      - ./:/project
+      - ~/.ssh/$SSH_HOST_KEY:/root/.ssh/$SSH_HOST_KEY:ro
+    command: ["bash"]

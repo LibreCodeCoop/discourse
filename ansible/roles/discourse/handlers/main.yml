@@ -1,0 +1,13 @@
+- name: start docker-compose
+  community.docker.docker_compose:
+      project_name: "discourse"
+      files: docker-compose.discourse.yml
+      project_src: /app
+      state: present
+      remove_orphans: true
+      pull: true
+
+- name: restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

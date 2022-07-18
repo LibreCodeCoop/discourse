@@ -1,0 +1,9 @@
+---
+# defaults file for ansible
+
+database_host:
+database_user:
+database_name:
+database_port:
+database_sslmode: require
+EXPOSE_PORT: 8073

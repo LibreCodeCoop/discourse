@@ -1,0 +1,3 @@
+- import_tasks: ca-certificate.yml
+- import_tasks: docker.yml
+- import_tasks: nginx.yml

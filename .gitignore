@@ -1,0 +1,17 @@
+# Env
+.env
+
+# Editors
+.idea
+
+# Terraform
+**/.terraform/
+.tmp/*/*
+!.tmp/.gitkeep
+!.tmp/*/.gitkeep
+.infracost
+*.tmp
+
+# AWS
+.aws/*
+!.aws/.gitkeep

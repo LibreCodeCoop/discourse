@@ -1,0 +1,7 @@
+- name: Generate docker-compose.yml
+  ansible.builtin.template:
+    src: templates/docker-compose.yml.j2
+    dest: /app/docker-compose.discourse.yml
+  notify: start docker-compose
+  tags:
+    - docker

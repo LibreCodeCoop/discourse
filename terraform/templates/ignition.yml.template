@@ -1,0 +1,4 @@
+#cloud-config
+runcmd:
+  - echo '${CNAME}' > /app/CNAME
+  - sh /app/setup.sh ${ENVIRONMENT}

@@ -1,0 +1,7 @@
+- name: Generate database-ca-certificate.crt
+  ansible.builtin.copy:
+    src: files/{{ ENVIRONMENT }}--database-ca-certificate.crt
+    dest: /app/database-ca-certificate.crt
+    force: no
+  tags:
+    - database

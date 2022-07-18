@@ -1,0 +1,7 @@
+ENVIRONMENT: development
+database_host: postgres-development-cluster-do-user-99832-0.b.db.ondigitalocean.com
+database_user: doadmin
+database_name: discourse_development
+database_port: 25060
+database_sslmode: require
+EXPOSE_PORT: 8073
