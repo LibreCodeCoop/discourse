@@ -7,15 +7,13 @@ build {
     sources      = [
       "files/nginx",
       "files/setup.sh",
-      "files/banner",
-      // "files/id_rsa.tar.xz"
+      "files/banner"
     ]
   }
 
   provisioner "shell" {
     inline = [
       "echo '@> 🗄️ Files...'",
-      // "tar -xf /tmp/id_rsa.tar.xz -C $HOME/.ssh/",
       "mkdir -p /app/html",
       "cp -v /tmp/setup.sh /app/setup.sh",
       "cp -v -r /tmp/nginx/html /app/",
@@ -34,16 +32,6 @@ build {
       "ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts",
       "ssh-keyscan -t rsa bitbucket.org >> $HOME/.ssh/known_hosts",
       "ssh-keyscan -t rsa gitlab.com >> $HOME/.ssh/known_hosts",
-      // "chmod 700 $HOME/.ssh",
-      // "chmod 600 $HOME/.ssh/config",
-      // "chmod 644 $HOME/.ssh/known_hosts",
-      // "chmod 644 $HOME/.ssh/authorized_keys",
-      // "chmod 600 $HOME/.ssh/id_rsa",
-      // "chmod 644 $HOME/.ssh/id_rsa.pub",
-      // "chown $USER:$USER $HOME/.ssh/",
-      // "chown $USER:$USER $HOME/.ssh/*",
-      // "ssh-keygen -l -f $HOME/.ssh/known_hosts",
-      // "eval `ssh-agent` && ssh-add",
       "echo '@> end'"
     ]
   }
