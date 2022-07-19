@@ -16,7 +16,7 @@ x-common-env: &common-env
 
   DISCOURSE_HOST: {{ DISCOURSE_HOST }}
   DISCOURSE_DATABASE_HOST: {{ database_host }}
-  DISCOURSE_DATABASE_PASSWORD: {{ secrets.database_password }}
+  DISCOURSE_DATABASE_PASSWORD: {{ database_password }}
   DISCOURSE_DATABASE_PORT_NUMBER: {{ database_port }}
   DISCOURSE_DATABASE_SSLMODE: {{ database_sslmode }}
   DISCOURSE_DATABASE_USER: {{ database_user }}
@@ -24,15 +24,12 @@ x-common-env: &common-env
   DISCOURSE_REDIS_HOST: redis
   DISCOURSE_REDIS_PORT_NUMBER: 6379
 
-  {#
-    DISCOURSE_SMTP_ADDRESS: {{ secrets.email_smtp_address }}
-    DISCOURSE_SMTP_PORT: {{ secrets.email_smtp_port }}
-    DISCOURSE_SMTP_USER_NAME: {{ secrets.email_smtp_user_name }}
-    DISCOURSE_SMTP_PASSWORD: "{{ secrets.email_smtp_password }}"
-    #DISCOURSE_SMTP_ENABLE_START_TLS: true           # (optional, default true)
-    DISCOURSE_SMTP_DOMAIN: {{ hostname }}
-    DISCOURSE_NOTIFICATION_EMAIL: noreply@{{ hostname }}
-  #}
+  DISCOURSE_SMTP_HOST: {{ smtp_host }}
+  DISCOURSE_SMTP_PORT: 587
+  DISCOURSE_SMTP_USER: {{ smtp_user }}
+  DISCOURSE_SMTP_PASSWORD: "{{ smtp_password }}"
+  DISCOURSE_SMTP_PROTOCOL: tls
+  DISCOURSE_NOTIFICATION_EMAIL: noreply@{{ smtp_domain }}
 
 version: '3.7'
 services:

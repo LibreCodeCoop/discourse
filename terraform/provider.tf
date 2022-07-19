@@ -12,7 +12,7 @@ terraform {
     key                         = "infra/root.tfstate"
     region                      = "us-west-1"
     # bucket                      = "dbseller-ecidade-tf-state"
-    bucket                      = "vinicius73-ecidade-tf-state"
+    bucket                      = "discourse-ecidade-tf-state"
     skip_credentials_validation = true
     skip_metadata_api_check     = true
   }

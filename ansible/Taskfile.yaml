@@ -1,6 +1,6 @@
 # https://taskfile.dev
 
-version: '3'
+version: "3"
 
 vars:
   STAGE: development
@@ -24,8 +24,8 @@ tasks:
   deploy:discourse:
     desc: faz deploy do e-Cidade discourse
     cmds:
-    - |
-      ansible-playbook discourse.yml -v \
-        --inventory-file inventory.{{ .STAGE }}.ini \
-        --extra-vars "@vars/{{ .STAGE }}.yml" \
-        --extra-vars "@vars/.secrets.{{ .STAGE }}.yml" {{.CLI_ARGS}}
+      - |
+        ansible-playbook discourse.yml -v \
+          --inventory-file inventory.{{ .STAGE }}.ini \
+          --extra-vars "@vars/{{ .STAGE }}.yml" \
+          --extra-vars "@vars/.secrets.{{ .STAGE }}.yml" {{.CLI_ARGS}}

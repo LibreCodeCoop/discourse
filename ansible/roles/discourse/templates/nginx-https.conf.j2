@@ -1,0 +1,90 @@
+upstream discourse {
+  server 127.0.0.1:{{ EXPOSE_PORT }};
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ DISCOURSE_HOST }};
+
+    location /.well-known/acme-challenge {
+        root /var/www/letsencrypt;
+        try_files $uri $uri/ =404;
+    }
+
+    location / {
+        rewrite ^ https://{{ DISCOURSE_HOST }}$request_uri? permanent;
+    }
+
+}
+
+server {
+  listen 443 ssl;
+  listen [::]:443 ssl;
+
+  server_name {{ DISCOURSE_HOST }};
+
+  ssl_certificate         /etc/letsencrypt/live/{{ DISCOURSE_HOST }}/fullchain.pem;
+  ssl_certificate_key     /etc/letsencrypt/live/{{ DISCOURSE_HOST }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ DISCOURSE_HOST }}/fullchain.pem;
+
+  ssl_session_cache shared:SSL:50m;
+  ssl_session_timeout 5m;
+  ssl_stapling on;
+  ssl_stapling_verify on;
+
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4";
+
+  ssl_dhparam /etc/nginx/dhparams.pem;
+  ssl_prefer_server_ciphers on;
+
+  rewrite_log on;
+
+  # security
+  include shared.d/security.conf;
+
+  merge_slashes     off;
+
+  # logging
+  access_log /var/log/nginx/{{ DISCOURSE_HOST }}.access.log;
+  error_log  /var/log/nginx/{{ DISCOURSE_HOST }}.error.log warn;
+
+  # favicon.ico
+  location = /favicon.ico {
+    log_not_found off;
+    access_log    off;
+  }
+
+  # robots.txt
+  location = /robots.txt {
+    log_not_found off;
+    access_log    off;
+  }
+
+  # additional config
+  include shared.d/error.conf;
+  include shared.d/compress.conf;
+
+
+  location / {
+    proxy_pass         http://discourse/;
+    proxy_redirect     off;
+
+    proxy_set_header   Host             $host;
+    proxy_set_header   X-Real-IP        $remote_addr;
+    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+
+    client_max_body_size       10m;
+    client_body_buffer_size    128k;
+
+    proxy_connect_timeout      90;
+    proxy_send_timeout         90;
+    proxy_read_timeout         90;
+
+    proxy_buffer_size          4k;
+    proxy_buffers              4 32k;
+    proxy_busy_buffers_size    64k;
+    proxy_temp_file_write_size 64k;
+  }
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env ansible-playbook
 
-- name: 'deploy e-cidade discourse'
+- name: "deploy e-cidade discourse"
   hosts: all
   become: true
   gather_facts: false
@@ -9,5 +9,6 @@
     - role: discourse
       vars:
         DISCOURSE_HOST: "{{ lookup('ansible.builtin.env', 'TARGET_DOMAIN') }}"
+        LETSENCRYPT_EMAIL: "{{ lookup('ansible.builtin.env', 'LETSENCRYPT_EMAIL') }}"
         DISCOURSE_DOCKER_IMAGE: docker.io/bitnami/discourse:2.8.6
         REDIS_DOCKER_IMAGE: docker.io/bitnami/redis:6.2

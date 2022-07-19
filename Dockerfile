@@ -4,7 +4,7 @@ RUN apt update -y
 
 FROM base as dowloader
 
-RUN apt install curl unzip tar gzip git ca-certificates openssh-client -y
+RUN apt install curl unzip tar gzip git ca-certificates openssh-client vim -y
 
 # Terraform download
 ARG TERRAFORM_VER

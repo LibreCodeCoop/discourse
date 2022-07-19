@@ -1,2 +1,5 @@
 inventory.*.ini
 .vault.*
+vars/production.yml
+!roles/discourse/README.md
+roles/discourse/files/*

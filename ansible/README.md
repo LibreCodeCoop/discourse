@@ -31,8 +31,16 @@ task --list
 
 Este projeto usa [ansible-vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html) para proteger as alguns valores secretos.
 
-A senha fica no arquivo `.vault.pass.txt`, este arquivo nunca pode ser versionado.
+Criar o arquivo `.secrets.$ENV.yml` com os seguintes valores:
+```
+database_password: 
+smtp_host: 
+smtp_user: 
+smtp_password: 
+smtp_domain: 
+```
 
+Após isso, criar o arquivo `.vault.pass.txt` com a senha para encriptar os secrets. Este arquivo nunca pode ser versionado.
 ```sh
 ansible-vault encrypt vars/.secrets.$ENV.yml 
 ```

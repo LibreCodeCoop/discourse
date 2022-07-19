@@ -1,8 +1,81 @@
 - name: Generate nginx config
   ansible.builtin.template:
-    src: templates/nginx.conf.j2
-    dest: /etc/nginx/sites-enabled/discourse
+    src: templates/nginx-http.conf.j2
+    dest: /etc/nginx/sites-available/discourse-http
     backup: no
-  notify: restart nginx
   tags:
     - nginx
+
+- name: Create symbolic link to http site
+  file:
+    src: /etc/nginx/sites-available/discourse-http
+    dest: /etc/nginx/sites-enabled/discourse-http
+    state: link
+  tags:
+    - nginx
+
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+  tags:
+    - nginx
+
+- name: Install certbot
+  apt:
+    name: ["certbot", "python3-certbot-nginx"]
+    update_cache: yes
+  tags:
+    - nginx
+
+- name: Check if certificate directory exists
+  stat:
+    path: /etc/letsencrypt/live/{{ DISCOURSE_HOST }}
+  register: certificate
+  tags:
+    - nginx
+
+- name: Create letsencrypt certificate
+  shell: certbot --nginx --noninteractive --agree-tos --email {{ LETSENCRYPT_EMAIL }} -d {{ DISCOURSE_HOST }}
+  when: not certificate.stat.exists
+  tags:
+    - nginx
+
+- name: Generate dhparams
+  shell: openssl dhparam -out /etc/nginx/dhparams.pem 2048
+  args:
+    creates: /etc/nginx/dhparams.pem
+  tags:
+    - nginx
+
+- name: Install nginx conf https site
+  template:
+    src: templates/nginx-https.conf.j2
+    dest: /etc/nginx/sites-available/discourse
+    backup: no
+  tags:
+    - nginx
+
+- name: Create symbolic link for https site
+  file:
+    src: /etc/nginx/sites-available/discourse
+    dest: /etc/nginx/sites-enabled/discourse
+    state: link
+  tags:
+    - nginx
+
+- name: Remove symlink for http site
+  file:
+    path: /etc/nginx/sites-enabled/discourse-http
+    state: absent
+  notify: restart nginx
+
+- name: Create crontab to renew SSL certificates
+  cron:
+    name: renew SSL certificates
+    job: /usr/bin/certbot renew
+    minute: "0"
+    hour: "0"
+    day: "1"
+    weekday: "*"
+    month: "*"
