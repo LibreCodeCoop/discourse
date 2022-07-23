@@ -2,30 +2,32 @@
 
 version: "3"
 
-vars:
-  STAGE: development
-
 tasks:
+  stage:
+    desc: Exibe em qual ambiente será executado
+    cmds:
+      - echo "O ambiente é {{ .ENV }}"
+
   secret:view:
     desc: Exibe o conteúdo do arquivo de segredos
     cmds:
-      - ansible-vault view vars/.secrets.{{ .STAGE }}.yml
+      - ansible-vault view vars/.secrets.{{ .ENV }}.yml
 
   secret:edit:
     desc: Edita o conteúdo do arquivo de segredos
     cmds:
-      - ansible-vault edit vars/.secrets.{{ .STAGE }}.yml
+      - ansible-vault edit vars/.secrets.{{ .ENV }}.yml
 
   inventory:
     desc: Gera o arquivo de inventário do ansible
     cmds:
-      - NODE_ENV={{ .STAGE }} node scripts/generate-inventary.mjs > inventory.{{ .STAGE }}.ini
+      - NODE_ENV={{ .ENV }} node scripts/generate-inventary.mjs > inventory.{{ .ENV }}.ini
 
   deploy:discourse:
     desc: faz deploy do e-Cidade discourse
     cmds:
       - |
         ansible-playbook discourse.yml -v \
-          --inventory-file inventory.{{ .STAGE }}.ini \
-          --extra-vars "@vars/{{ .STAGE }}.yml" \
-          --extra-vars "@vars/.secrets.{{ .STAGE }}.yml" {{.CLI_ARGS}}
+          --inventory-file inventory.{{ .ENV }}.ini \
+          --extra-vars "@vars/{{ .ENV }}.yml" \
+          --extra-vars "@vars/.secrets.{{ .ENV }}.yml" {{.CLI_ARGS}}
